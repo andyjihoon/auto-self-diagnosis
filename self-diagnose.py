@@ -9,9 +9,11 @@ name: str = "name"  # 이름
 birth_date: str = "YYMMDD"  # 생년월일
 path_to_driver: str = 'chromedriver.exe'  # ChromeDriver 경로
 time: str = "HH:MM"  # 진단 시각
+log_file: str = 'diagnose.log'  # 로그 파일 경로
+
 
 logging.basicConfig(level=logging.INFO,
-                    filename='diagnose.log',
+                    filename=log_file,
                     filemode='a',
                     format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
@@ -43,13 +45,14 @@ def diagnose():
     driver.find_element_by_name("pName").click()
     while not (name in driver.find_element_by_name("pName").get_attribute("value")):
         driver.find_element_by_name("pName").send_keys(name)
-
     driver.find_element_by_name("frnoRidno").send_keys(birth_date)
+
     driver.find_element_by_id("btnConfirm").click()
 
     # 설문조사 진행
     for num in map(str, [1, 2, 7, 8, 9]):
         driver.find_element_by_name("rspns0" + num).click()
+
     driver.find_element_by_id("btnConfirm").click()
 
     # 완료 메시지 출력
@@ -59,7 +62,9 @@ def diagnose():
     driver.quit()
 
 
+hour, minute = time.split(':')
+
 schedule = BlockingScheduler()
-schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=time.split(':')[0], minute=time.split(':')[1])
+schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=hour, minute=minute)
 
 schedule.start()
