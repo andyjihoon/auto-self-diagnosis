@@ -15,7 +15,7 @@ log_file: str = 'diagnose.log'  # 로그 파일 경로
 logging.basicConfig(level=logging.INFO,
                     filename=log_file,
                     filemode='a',
-                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+                    format='%(asctime)s %(name)-21s %(levelname)-8s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
 
 console = logging.StreamHandler()
