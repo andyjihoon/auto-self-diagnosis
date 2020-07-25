@@ -1,21 +1,29 @@
 from selenium import webdriver
 from apscheduler.schedulers.blocking import BlockingScheduler
+import logging
 
 
 school: str = "school"  # 학교이름
 name: str = "name"  # 이름
 birth_date: str = "YYMMDD"  # 생년월일
 path_to_driver = 'chromedriver.exe'  # ChromeDriver 경로
+time = "HH:MM"
+
+logging.basicConfig(level=logging.INFO,
+                    filename='diagnose.log',
+                    filemode='w',
+                    format='%(asctime)s - %(message)s',
+                    datefmt='%d-%b-%y %H:%M:%S')
 
 
 def diagnose():
-    print("starting self diagnosis")
+    logging.info("starting self diagnosis")
 
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(chrome_options=options, executable_path=path_to_driver)
+    driver = webdriver.Chrome(options=options, executable_path=path_to_driver)
     driver.implicitly_wait(.5)
     driver.get("https://eduro.goe.go.kr/hcheck/index.jsp")
 
@@ -37,13 +45,13 @@ def diagnose():
     driver.find_element_by_id("btnConfirm").click()
 
     # 완료 메시지 출력
-    print(driver.find_element_by_class_name("content_box").text)
+    logging.info(driver.find_element_by_class_name("content_box").text)
 
-    print("self diagnosis complete")
+    logging.info("self diagnosis complete")
     driver.quit()
 
 
 schedule = BlockingScheduler()
-schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour='8', minute='30')
+schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=time.split(':')[0], minute=time.split(':')[1])
 
 schedule.start()
