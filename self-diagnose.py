@@ -2,9 +2,10 @@ from selenium import webdriver
 from apscheduler.schedulers.blocking import BlockingScheduler
 
 
-school: str = "school"
-name: str = "name"
-birth_date: str = "YYMMDD"
+school: str = "school"  # 학교이름
+name: str = "name"  # 이름
+birth_date: str = "YYMMDD"  # 생년월일
+path_to_driver = 'chromedriver.exe'  # ChromeDriver 경로
 
 
 def diagnose():
@@ -14,7 +15,7 @@ def diagnose():
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
     options.add_argument('--disable-dev-shm-usage')
-    driver = webdriver.Chrome(chrome_options=options, executable_path='chromedriver.exe')
+    driver = webdriver.Chrome(chrome_options=options, executable_path=path_to_driver)
     driver.implicitly_wait(.5)
     driver.get("https://eduro.goe.go.kr/hcheck/index.jsp")
 
