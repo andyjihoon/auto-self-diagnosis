@@ -60,6 +60,6 @@ def diagnose():
 
 
 schedule = BlockingScheduler()
-schedule.add_job(diagnose, 'cron', day_of_week='6', hour=time.split(':')[0], minute=time.split(':')[1])
+schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=time.split(':')[0], minute=time.split(':')[1])
 
 schedule.start()
