@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from selenium import webdriver
 from apscheduler.schedulers.blocking import BlockingScheduler
 import logging
@@ -6,18 +7,25 @@ import logging
 school: str = "school"  # 학교이름
 name: str = "name"  # 이름
 birth_date: str = "YYMMDD"  # 생년월일
-path_to_driver = 'chromedriver.exe'  # ChromeDriver 경로
-time = "HH:MM"
+path_to_driver: str = 'chromedriver.exe'  # ChromeDriver 경로
+time: str = "HH:MM"  # 진단 시각
 
 logging.basicConfig(level=logging.INFO,
                     filename='diagnose.log',
-                    filemode='w',
-                    format='%(asctime)s - %(message)s',
+                    filemode='a',
+                    format='%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
                     datefmt='%d-%b-%y %H:%M:%S')
+
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+formatter = logging.Formatter('%(name)-12s: %(levelname)-8s %(message)s')
+logging.getLogger().addHandler(console)
+
+diagnose_logger = logging.getLogger('diagnose')
 
 
 def diagnose():
-    logging.info("starting self diagnosis")
+    diagnose_logger.info("starting self diagnosis")
 
     options = webdriver.ChromeOptions()
     options.add_argument('--headless')
@@ -45,13 +53,13 @@ def diagnose():
     driver.find_element_by_id("btnConfirm").click()
 
     # 완료 메시지 출력
-    logging.info(driver.find_element_by_class_name("content_box").text)
+    diagnose_logger.info(driver.find_element_by_class_name("content_box").text.replace('\n', ' '))
 
-    logging.info("self diagnosis complete")
+    diagnose_logger.info("self diagnosis complete")
     driver.quit()
 
 
 schedule = BlockingScheduler()
-schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=time.split(':')[0], minute=time.split(':')[1])
+schedule.add_job(diagnose, 'cron', day_of_week='6', hour=time.split(':')[0], minute=time.split(':')[1])
 
 schedule.start()
