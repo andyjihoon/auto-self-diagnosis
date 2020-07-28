@@ -57,14 +57,20 @@ def diagnose():
 
     # 완료 메시지 출력
     diagnose_logger.info(driver.find_element_by_class_name("content_box").text.replace('\n', ' '))
+    diagnose_logger.info(driver.find_element_by_class_name("point2").text)
 
     diagnose_logger.info("self diagnosis complete")
     driver.quit()
 
 
-hour, minute = time.split(':')
+def main():
+    hour, minute = time.split(':')
 
-schedule = BlockingScheduler()
-schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=hour, minute=minute)
+    schedule = BlockingScheduler()
+    schedule.add_job(diagnose, 'cron', day_of_week='0-4', hour=hour, minute=minute)
 
-schedule.start()
+    schedule.start()
+
+
+if __name__ == '__main__':
+    main()
